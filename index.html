@@ -1,1 +1,85 @@
-Hello World
+<!DOCTYPE html>
+<html>
+<head>
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+<title>Mapa</title>
+<script src="http://code.jquery.com/jquery-1.11.0.min.js"></script>
+<link href="http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.css" media="screen, print" rel="stylesheet">
+<script src="http://api.tiles.mapbox.com/mapbox.js/v1.5.0/mapbox.js"></script>
+<style type="text/css">
+body {
+  margin: 0;
+}
+
+html, body, #map {
+    width: 100%;
+    height: 100%;
+}
+</style>
+</head>
+<body>
+<!-- paste HTML below this line -->
+<div id="map"></div>
+
+<script type="text/javascript">
+// 1891 map attribution
+var attribution_1891 = 'Map image from LOC collection';
+
+// 1891 tile set with attribution
+var bog_1891 = L.tileLayer(  'http://mapwarper.net/maps/tile/15649/{z}/{x}/{y}.png' , { attribution: attribution_1891 } );
+
+// 2014 tile set attribution
+var attribution_2014 = '<a id="home-link" target="_top" href="../">Map tiles</a> by <a target="_top" href="http://stamen.com">Stamen Design</a>, under <a target="_top" href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a target="_top" href="http://openstreetmap.org">OpenStreetMap</a>, under <a target="_top" href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.';
+
+// 2014 tile set using Stamen Toner Lite
+var bog_2014 = L.tileLayer( 'http://a.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',{attribution: attribution_2014});
+
+// create the map with the default the tileset
+var map = L.map('map', {layers:bog_1891});
+
+// create a variable to hold all tile sets and name them so we can use it for the toggler
+var baseMaps = {
+  "Washington DC 2016": bog_2014,
+  "Washington DC 1916": bog_1891
+};
+
+// add the tile set switcher control
+L.control.layers(baseMaps).addTo(map);
+
+// the geojson as it comes from the text document
+var geostring = '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"Name":"Edgar Patterson House","Photo":"https://cdn.loc.gov/service/pnp/habshaer/dc/dc0100/dc0196/photos/025260pr.jpg","Address":"1241 Thirtieth Street Northwest","Year":" 1968","URL":" https://www.loc.gov/item/dc0196/"},"geometry":{"type":"Point","coordinates":[-77.0163653,38.9001118]}},{"type":"Feature","properties":{"Name":"De La Roche-Jewell Tenant House","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0000/dc0084/photos/025269pr.jpg","Address":"1320 Thirtieth Street Northwest","Year":" 1968","URL":" https://www.loc.gov/item/dc0084/"},"geometry":{"type":"Point","coordinates":[-77.0163653,38.9001118]}},{"type":"Feature","properties":{"Name":"Sewall-Belmont House","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0900/dc0963/photos/379198pr.jpg","Address":"144 Constitution Avenue Northeast","Year":" 1968","URL":" https://www.loc.gov/item/dc0963/"},"geometry":{"type":"Point","coordinates":[-77.00374,38.89406]}},{"type":"Feature","properties":{"Name":"Gallaudet College, College Hall","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0100/dc0116/photos/028589pr.jpg","Address":"Seventh & Florida Avenue Northeast","Year":" 1970","URL":" https://www.loc.gov/item/dc0116/"},"geometry":{"type":"Point","coordinates":[-76.99570655822754,38.904860235331306]}},{"type":"Feature","properties":{"Name":"U.S. Supreme Court","Photo":"https://cdn.loc.gov/service/pnp/habshaer/dc/dc0400/dc0464/photos/030008pr.jpg","Address":"First & East Capitol Streets Northeast","Year":" 1970","URL":"https://www.loc.gov/item/dc0464/"},"geometry":{"type":"Point","coordinates":[-77.00465440750122,38.89161737290729]}}]}';
+
+
+// parse the geojson string to a proper json structure
+var geodata = JSON.parse(geostring);
+
+// now make it understandable by leaflet
+var geolayer = L.geoJson(geodata, {onEachFeature: showPopup});
+
+// add the points to the map
+geolayer.addTo(map);
+
+// zoom the map to the bounds of the points
+map.fitBounds(geolayer.getBounds());
+
+function showPopup(feature, layer) {
+  var key, val;
+  var content = [];
+  for (key in feature.properties) {
+    val = feature.properties[key];
+    if (key == "URL") {
+      val = '<a href="' + val + '" target="_blank">See page</a>';
+    } else if (key == "Photo") {
+      val = '<img src="' + val + '"  height="150" />';
+    }
+    content.push("<strong>" + key + ":</strong> " + val);
+  }
+  layer.bindPopup(content.join("<br />"));
+}
+</script>
+</body>
+</html>
+
+
+
