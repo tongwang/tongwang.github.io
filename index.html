@@ -36,16 +36,18 @@ var attribution_2014 = '<a id="home-link" target="_top" href="../">Map tiles</a>
 var bog_2014 = L.tileLayer( 'http://a.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',{attribution: attribution_2014});
 
 // create the map with the default the tileset
-var map = L.map('map', {layers:bog_1891});
+var map = L.map('map', {layers:[bog_2014, bog_1891]});
+
+bog_1891.setOpacity(0.5);
 
 // create a variable to hold all tile sets and name them so we can use it for the toggler
-var baseMaps = {
-  "Washington DC 2016": bog_2014,
-  "Washington DC 1916": bog_1891
-};
+//var baseMaps = {
+//  "Washington DC 2016": bog_2014,
+//  "Washington DC 1916": bog_1891
+//};
 
 // add the tile set switcher control
-L.control.layers(baseMaps).addTo(map);
+//L.control.layers(baseMaps).addTo(map);
 
 // the geojson as it comes from the text document
 var geostring = '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"Name":"Edgar Patterson House","Photo":"https://cdn.loc.gov/service/pnp/habshaer/dc/dc0100/dc0196/photos/025260pr.jpg","Address":"1241 Thirtieth Street Northwest","Year":" 1968","URL":" https://www.loc.gov/item/dc0196/"},"geometry":{"type":"Point","coordinates":[-77.0163653,38.9001118]}},{"type":"Feature","properties":{"Name":"De La Roche-Jewell Tenant House","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0000/dc0084/photos/025269pr.jpg","Address":"1320 Thirtieth Street Northwest","Year":" 1968","URL":" https://www.loc.gov/item/dc0084/"},"geometry":{"type":"Point","coordinates":[-77.0163653,38.9001118]}},{"type":"Feature","properties":{"Name":"Sewall-Belmont House","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0900/dc0963/photos/379198pr.jpg","Address":"144 Constitution Avenue Northeast","Year":" 1968","URL":" https://www.loc.gov/item/dc0963/"},"geometry":{"type":"Point","coordinates":[-77.00374,38.89406]}},{"type":"Feature","properties":{"Name":"Gallaudet College, College Hall","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0100/dc0116/photos/028589pr.jpg","Address":"Seventh & Florida Avenue Northeast","Year":" 1970","URL":" https://www.loc.gov/item/dc0116/"},"geometry":{"type":"Point","coordinates":[-76.99570655822754,38.904860235331306]}},{"type":"Feature","properties":{"Name":"U.S. Supreme Court","Photo":"https://cdn.loc.gov/service/pnp/habshaer/dc/dc0400/dc0464/photos/030008pr.jpg","Address":"First & East Capitol Streets Northeast","Year":" 1970","URL":"https://www.loc.gov/item/dc0464/"},"geometry":{"type":"Point","coordinates":[-77.00465440750122,38.89161737290729]}}]}';
