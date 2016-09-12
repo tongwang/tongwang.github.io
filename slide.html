@@ -4,15 +4,15 @@
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 <title>Mash-up maps and historical building survey</title>
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.css" />
 <script src="https://unpkg.com/leaflet@1.0.0-rc.3/dist/leaflet.js"></script>
-    
-<link rel="stylesheet" href="https://lizardtechblog.github.io/Leaflet.OpacityControls/lib/opacity/Control.Opacity.css" />
-<script src="https://lizardtechblog.github.io/Leaflet.OpacityControls/lib/opacity/Control.Opacity.js"></script>
-        
+
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.0/themes/base/jquery-ui.css">
+
+<script src="time-slider.js"></script>
 
 <style type="text/css">
 body {
@@ -29,31 +29,57 @@ html, body, #map {
 <div id="map"></div>
 
 <script type="text/javascript">
-// 1891 map attribution
-var attribution_1891 = 'Map image from LOC collection';
-// 1891 tile set with attribution
-var bog_1891 = L.tileLayer(  'http://mapwarper.net/maps/tile/15649/{z}/{x}/{y}.png' , { attribution: attribution_1891 } );
-// 2014 tile set attribution
-var attribution_2014 = '<a id="home-link" target="_top" href="../">Map tiles</a> by <a target="_top" href="http://stamen.com">Stamen Design</a>, under <a target="_top" href="http://creativecommons.org/licenses/by/3.0">CC BY 3.0</a>. Data by <a target="_top" href="http://openstreetmap.org">OpenStreetMap</a>, under <a target="_top" href="http://creativecommons.org/licenses/by-sa/3.0">CC BY SA</a>.';
-// 2014 tile set using Stamen Toner Lite
-var bog_2014 = L.tileLayer( 'http://a.tile.stamen.com/toner-lite/{z}/{x}/{y}.png',{attribution: attribution_2014});
-// create the map with the default the tileset
-var map = L.map('map', {layers:[bog_2014, bog_1891]});
-bog_1891.setOpacity(0.7);
 
-        var opacitySlider = new L.Control.opacitySlider();
-        map.addControl(opacitySlider);
-opacitySlider.setOpacityLayer(bog_1891);
+var dc_today = { attribution: 'Map tiles by <a target="_top" href="http://mapbox.com">Mapbox</a>.', 
+                tile_url: 'https://api.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpbG10dnA3NzY3OTZ0dmtwejN2ZnUycjYifQ.1W5oTOnWXQ9R1w8u3Oo1yA'}
+var l_dc_today = L.tileLayer(dc_today.tile_url , { attribution: dc_today.attribution, year: 2016 } );
+
+var dc_1791 = { attribution: 'Map image from LOC collection', 
+                tile_url: 'http://mapwarper.net/maps/tile/15655/{z}/{x}/{y}.png'}
+var l_dc_1791 = L.tileLayer(dc_1791.tile_url , { attribution: dc_1791.attribution, year: 1791 } );
 
 
+var dc_1854 = { attribution: 'Map image from LOC collection', 
+                tile_url: 'http://mapwarper.net/maps/tile/15656/{z}/{x}/{y}.png'}
+var l_dc_1854 = L.tileLayer(dc_1854.tile_url , { attribution: dc_1854.attribution, year: 1854 } );
+
+
+var dc_1893 = { attribution: 'Map image from LOC collection', 
+                tile_url: 'http://mapwarper.net/maps/tile/15657/{z}/{x}/{y}.png'}
+var l_dc_1893 = L.tileLayer(dc_1893.tile_url , { attribution: dc_1893.attribution, year: 1893 } );
+
+var dc_1908 = { attribution: 'Map image from LOC collection', 
+                tile_url: 'http://mapwarper.net/maps/tile/15654/{z}/{x}/{y}.png'}
+var l_dc_1908 = L.tileLayer(dc_1908.tile_url , { attribution: dc_1908.attribution, year: 1908 } );
+
+
+var dc_1916 = { attribution: 'Map image from LOC collection', 
+                tile_url: 'http://mapwarper.net/maps/tile/15649/{z}/{x}/{y}.png'}
+var l_dc_1916 = L.tileLayer(dc_1916.tile_url , { attribution: dc_1916.attribution, year: 1916 } );
+
+var dc_1920 = { attribution: 'Map image from LOC collection', 
+                tile_url: 'http://mapwarper.net/maps/tile/15658/{z}/{x}/{y}.png'}
+var l_dc_1920 = L.tileLayer(dc_1920.tile_url , { attribution: dc_1920.attribution, year: 1920 } );
+
+var layers = [l_dc_1791, l_dc_1854, l_dc_1893, l_dc_1908, l_dc_1916, l_dc_1920, l_dc_today];
+
+var slider_layers = [l_dc_1920, l_dc_1854, l_dc_1908, l_dc_1791, l_dc_1916, l_dc_1893];
+
+var map = L.map('map', {layers: layers});
 
 // create a variable to hold all tile sets and name them so we can use it for the toggler
-//var baseMaps = {
-//  "Washington DC 2016": bog_2014,
-//  "Washington DC 1916": bog_1891
-//};
+var baseMaps = {
+  "Washington DC 2016": l_dc_today,
+  "Washington DC 1791": l_dc_1791,
+  "Washington DC 1854": l_dc_1854,
+  "Washington DC 1893": l_dc_1893,
+  "Washington DC 1908": l_dc_1908,
+  "Washington DC 1920": l_dc_1920,
+  "Washington DC 1916": l_dc_1916
+};
+
 // add the tile set switcher control
-//L.control.layers(baseMaps).addTo(map);
+L.control.layers(baseMaps).addTo(map);
 // the geojson as it comes from the text document
 var geostring = '{"type":"FeatureCollection","features":[{"type":"Feature","properties":{"Name":"Edgar Patterson House","Photo":"https://cdn.loc.gov/service/pnp/habshaer/dc/dc0100/dc0196/photos/025260pr.jpg","Address":"1241 Thirtieth Street Northwest","Year":" 1968","URL":" https://www.loc.gov/item/dc0196/"},"geometry":{"type":"Point","coordinates":[-77.0163653,38.9001118]}},{"type":"Feature","properties":{"Name":"De La Roche-Jewell Tenant House","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0000/dc0084/photos/025269pr.jpg","Address":"1320 Thirtieth Street Northwest","Year":" 1968","URL":" https://www.loc.gov/item/dc0084/"},"geometry":{"type":"Point","coordinates":[-77.0163653,38.9001118]}},{"type":"Feature","properties":{"Name":"Sewall-Belmont House","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0900/dc0963/photos/379198pr.jpg","Address":"144 Constitution Avenue Northeast","Year":" 1968","URL":" https://www.loc.gov/item/dc0963/"},"geometry":{"type":"Point","coordinates":[-77.00374,38.89406]}},{"type":"Feature","properties":{"Name":"Gallaudet College, College Hall","Photo":" https://cdn.loc.gov/service/pnp/habshaer/dc/dc0100/dc0116/photos/028589pr.jpg","Address":"Seventh & Florida Avenue Northeast","Year":" 1970","URL":" https://www.loc.gov/item/dc0116/"},"geometry":{"type":"Point","coordinates":[-76.99570655822754,38.904860235331306]}},{"type":"Feature","properties":{"Name":"U.S. Supreme Court","Photo":"https://cdn.loc.gov/service/pnp/habshaer/dc/dc0400/dc0464/photos/030008pr.jpg","Address":"First & East Capitol Streets Northeast","Year":" 1970","URL":"https://www.loc.gov/item/dc0464/"},"geometry":{"type":"Point","coordinates":[-77.00465440750122,38.89161737290729]}}]}';
 // parse the geojson string to a proper json structure
@@ -78,6 +104,18 @@ function showPopup(feature, layer) {
   }
   layer.bindPopup(content.join("<br />"));
 }
+
+var sliderControl = L.control.yearSliderControl({position: "topright", 
+                                             layers: slider_layers,
+                                             minValue: 1790,
+                                             maxValue: 1950});
+
+//Make sure to add the slider to the map ;-)
+map.addControl(sliderControl);
+
+//And initialize the slider
+sliderControl.startSlider();
+
 </script>
 </body>
 </html>
